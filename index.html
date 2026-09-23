@@ -626,15 +626,109 @@
       letter-spacing: 0.05em !important;
       padding: 4px 12px !important;
     }
-  </style>
 
+    /* ⭐️ ======================================================== ⭐️ */
+    /* ⭐️ [전역 반응형 인터랙티브 건축 그리드 & 마우스 패럴랙스 스타일] ⭐️ */
+    /* ⭐️ ======================================================== ⭐️ */
+    #interactive-grid-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none !important;
+      z-index: 0;
+      overflow: hidden;
+    }
+    #interactive-grid-pattern {
+      position: absolute;
+      top: -80px;
+      left: -80px;
+      right: -80px;
+      bottom: -80px;
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(38, 37, 30, 0.058) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(38, 37, 30, 0.058) 1px, transparent 1px);
+      transform: translate3d(var(--grid-shift-x, 0px), var(--grid-shift-y, 0px), 0);
+      will-change: transform;
+    }
+    #interactive-grid-spotlight {
+      position: absolute;
+      inset: 0;
+      pointer-events: none !important;
+      background: radial-gradient(650px circle at var(--mouse-x, 50%) var(--mouse-y, 40%), rgba(245, 78, 0, 0.04) 0%, rgba(38, 37, 30, 0.015) 45%, transparent 75%);
+    }
+
+    /* 테마별 그리드 선 및 스포트라이트 조명 튜닝 */
+    [data-theme="modern-dark"] #interactive-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.058) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.058) 1px, transparent 1px);
+    }
+    [data-theme="modern-dark"] #interactive-grid-spotlight {
+      background: radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 40%), rgba(59, 130, 246, 0.06) 0%, rgba(255, 255, 255, 0.015) 50%, transparent 80%);
+    }
+
+    [data-theme="warm-stone"] #interactive-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(28, 25, 23, 0.052) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(28, 25, 23, 0.052) 1px, transparent 1px);
+    }
+    [data-theme="warm-stone"] #interactive-grid-spotlight {
+      background: radial-gradient(650px circle at var(--mouse-x, 50%) var(--mouse-y, 40%), rgba(217, 119, 6, 0.03) 0%, rgba(28, 25, 23, 0.015) 50%, transparent 80%);
+    }
+
+    [data-theme="technical-mono"] #interactive-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.072) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.072) 1px, transparent 1px);
+    }
+    [data-theme="technical-mono"] #interactive-grid-spotlight {
+      background: radial-gradient(650px circle at var(--mouse-x, 50%) var(--mouse-y, 40%), rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.01) 50%, transparent 80%);
+    }
+
+    [data-theme="natural-beige"] #interactive-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(41, 37, 36, 0.058) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(41, 37, 36, 0.058) 1px, transparent 1px);
+    }
+    [data-theme="natural-beige"] #interactive-grid-spotlight {
+      background: radial-gradient(650px circle at var(--mouse-x, 50%) var(--mouse-y, 40%), rgba(180, 83, 9, 0.035) 0%, rgba(41, 37, 36, 0.015) 50%, transparent 80%);
+    }
+
+
+    /* 정적 그리드 중복 방지: 전역 인터랙티브 그리드로 완벽 일원화 */
+    html[data-theme="cursor-editorial"] body,
+    html[data-theme="soft-concrete"] body,
+    [data-theme="cursor-editorial"] body,
+    [data-theme="soft-concrete"] body {
+      background-image: none !important;
+    }
+    .cad-blueprint-grid,
+    [data-theme="modern-dark"] .cad-blueprint-grid {
+      background-image: none !important;
+    }
+    [data-theme="warm-stone"] #portfolio,
+    [data-theme="warm-stone"] section,
+    [data-theme="natural-beige"] #portfolio,
+    [data-theme="natural-beige"] section,
+    [data-theme="technical-mono"] #portfolio,
+    [data-theme="technical-mono"] section {
+      background-color: transparent !important;
+    }
+
+  </style>
 </head>
 <body class="bg-[#f7f7f4] text-[#26251e] antialiased font-sans pb-24">
+
+  <!-- ⭐️ [전역 인터랙티브 건축 제도 그리드 레이어 (마우스 패럴랙스 반응형)] ⭐️ -->
+  <div id="interactive-grid-bg" class="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
+    <div id="interactive-grid-pattern" class="absolute will-change-transform"></div>
+    <div id="interactive-grid-spotlight" class="absolute inset-0 pointer-events-none"></div>
+  </div>
 
   <!-- ========================================== -->
   <!-- ⭐️ 웹 전용 레이아웃 (인쇄 시 완전히 소멸) ⭐️ -->
   <!-- ========================================== -->
-  <div id="web-layout">
+  <div id="web-layout" class="relative z-10">
 
     <!-- ⭐️ [최상단 포트폴리오 안내 띠 배너] ⭐️ -->
     <div class="bg-stone-950 text-white text-xs py-2 px-6 border-b border-stone-800">
@@ -9118,7 +9212,89 @@ ${sourceText || '(초안 없음. 해당 항목에 어울리는 최상의 실무 
 
     // 모드 초기화 실행
     initPortfolioMode();
-  </script>
+  
+
+    // ⭐️ [전역 반응형 인터랙티브 건축 그리드 엔진 (마우스 무브 & 터치 반응)] ⭐️
+    function initInteractiveGrid() {
+      const pattern = document.getElementById('interactive-grid-pattern');
+      const spotlight = document.getElementById('interactive-grid-spotlight');
+      if (!pattern && !spotlight) return;
+
+      let targetX = window.innerWidth / 2;
+      let targetY = window.innerHeight / 2;
+      let currentX = targetX;
+      let currentY = targetY;
+
+      let targetShiftX = 0;
+      let targetShiftY = 0;
+      let currentShiftX = 0;
+      let currentShiftY = 0;
+
+      let isMoving = false;
+      let animFrameId = null;
+
+      function onPointerMove(e) {
+        let clientX = e.clientX;
+        let clientY = e.clientY;
+        if (e.touches && e.touches.length > 0) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        }
+        if (typeof clientX !== 'number' || typeof clientY !== 'number') return;
+
+        targetX = clientX;
+        targetY = clientY;
+
+        // 화면 중심 기준 상대 비율 (-0.5 ~ +0.5)
+        const normX = (clientX / window.innerWidth) - 0.5;
+        const normY = (clientY / window.innerHeight) - 0.5;
+
+        // 건축 제도 그리드 패럴랙스 이동 범위 (최대 ±28px 부드러운 심도)
+        targetShiftX = -normX * 36;
+        targetShiftY = -normY * 36;
+
+        if (!isMoving) {
+          isMoving = true;
+          animFrameId = requestAnimationFrame(updateGrid);
+        }
+      }
+
+      function updateGrid() {
+        // 부드러운 감쇠 선형보간 (Lerp 감속 댐핑 효과)
+        const lerpFactor = 0.08;
+        currentX += (targetX - currentX) * lerpFactor;
+        currentY += (targetY - currentY) * lerpFactor;
+        currentShiftX += (targetShiftX - currentShiftX) * lerpFactor;
+        currentShiftY += (targetShiftY - currentShiftY) * lerpFactor;
+
+        if (pattern) {
+          pattern.style.setProperty('--grid-shift-x', `${currentShiftX.toFixed(2)}px`);
+          pattern.style.setProperty('--grid-shift-y', `${currentShiftY.toFixed(2)}px`);
+        }
+        if (spotlight) {
+          spotlight.style.setProperty('--mouse-x', `${currentX.toFixed(1)}px`);
+          spotlight.style.setProperty('--mouse-y', `${currentY.toFixed(1)}px`);
+        }
+
+        // 임계값 이하로 수렴 시 애니메이션 중지하여 배터리 & CPU 0% 유지
+        const diff = Math.abs(targetShiftX - currentShiftX) + Math.abs(targetShiftY - currentShiftY) + Math.abs(targetX - currentX) + Math.abs(targetY - currentY);
+        if (diff > 0.04) {
+          animFrameId = requestAnimationFrame(updateGrid);
+        } else {
+          isMoving = false;
+        }
+      }
+
+      window.addEventListener('mousemove', onPointerMove, { passive: true });
+      window.addEventListener('touchmove', onPointerMove, { passive: true });
+
+      // 페이지 로드 시 초기 중심 좌표 1회 연산 반영
+      updateGrid();
+    }
+
+    // 전역 반응형 건축 그리드 초기화 실행
+    initInteractiveGrid();
+</script>
 
   
   <!-- ⭐️ [디자인 테마 선택 팝업 모달] ⭐️ -->
