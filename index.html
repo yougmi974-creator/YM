@@ -8478,7 +8478,7 @@ ${sourceText || '(초안 없음. 해당 항목에 어울리는 최상의 실무 
     // ========================================================
     // ⭐️ [보안 관리자 인증 & 본인 전용 편집 모드 시스템] ⭐️
     // ========================================================
-    const ADMIN_SECRET_PIN = "1234"; // 기본 관리자 비밀번호 (학생 배포용 표준 기본값)
+    const ADMIN_SECRET_PIN = "6478"; // 관리자 비밀번호
 
     let isEditorMode = false;
     let isAdminAuthorized = false;
@@ -8487,8 +8487,8 @@ ${sourceText || '(초안 없음. 해당 항목에 어울리는 최상의 실무 
       const params = new URLSearchParams(window.location.search);
       const adminParam = params.get('admin') || params.get('edit') || params.get('key');
 
-      // 1. 비밀 URL 접속 확인 (예: ?admin=1234 또는 ?admin=kd1234)
-      if (adminParam === ADMIN_SECRET_PIN || adminParam === 'kd1234' || adminParam === 'master') {
+      // 1. 비밀 URL 접속 확인 (예: ?admin=6478)
+      if (adminParam === ADMIN_SECRET_PIN || adminParam === '6478' || adminParam === 'master') {
         localStorage.setItem('kd_admin_auth', 'true');
         localStorage.setItem('kd_portfolio_mode', 'edit');
         // 주소창에서 파라미터 흔적을 지워 다른 사람에게 노출 방지
@@ -8521,7 +8521,7 @@ ${sourceText || '(초안 없음. 해당 항목에 어울리는 최상의 실무 
       const entered = prompt("🔑 [KD 포트폴리오 관리자 인증]\n본인(작성자) 전용 비밀번호를 입력하세요:");
       if (entered === null) return;
 
-      if (entered.trim() === ADMIN_SECRET_PIN || entered.trim() === "kd1234") {
+      if (entered.trim() === ADMIN_SECRET_PIN || entered.trim() === "6478") {
         localStorage.setItem('kd_admin_auth', 'true');
         localStorage.setItem('kd_portfolio_mode', 'edit');
         isAdminAuthorized = true;
