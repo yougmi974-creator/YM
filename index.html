@@ -929,6 +929,111 @@
   <!-- ⭐️ [A4 인쇄 / PDF 다운로드 전용 컨테이너]                 -->
   <!-- ======================================================== -->
   <div id="print-area" class="hidden"></div>
+  <!-- ⭐️ [1. 커스텀 보안 비밀번호 입력 배너 모달] ⭐️ -->
+  <div id="resume-auth-modal" class="fixed inset-0 z-[99999] bg-stone-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white border border-[#e6e5e0] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-200" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#f54e00]"></span>
+          <h3 class="text-base font-bold text-stone-900 font-sans">이력서 &amp; 자기소개서 열람 인증</h3>
+        </div>
+        <button onclick="closeResumeAuthModal()" class="text-stone-400 hover:text-stone-900 text-lg font-bold px-2 py-1 cursor-pointer">✕</button>
+      </div>
+      
+      <p class="text-xs text-stone-600 leading-relaxed break-keep">
+        개인정보 보호를 위해 지원자 본인 및 인증된 면접관 전용 비밀번호 확인 후 열람 및 출력이 가능합니다.
+      </p>
+
+      <div class="space-y-1.5">
+        <label class="block text-[11px] font-mono font-semibold text-stone-700">비밀번호 입력</label>
+        <input 
+          type="password" 
+          id="resume-auth-input" 
+          maxlength="8" 
+          placeholder="비밀번호 4자리 입력" 
+          onkeydown="if(event.key==='Enter') submitResumeAuth()"
+          class="w-full px-3.5 py-2.5 border border-stone-300 rounded-lg text-sm font-mono tracking-widest focus:border-[#f54e00] focus:ring-1 focus:ring-[#f54e00] outline-none"
+        />
+        <p id="resume-auth-error" class="text-xs text-rose-600 font-medium hidden">❌ 비밀번호가 올바르지 않습니다.</p>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <button 
+          onclick="submitResumeAuth()" 
+          class="flex-1 py-3 bg-[#f54e00] hover:bg-[#d04200] text-white text-xs font-semibold rounded-lg transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5"
+        >
+          <span>확인 및 열람</span>
+          <span>→</span>
+        </button>
+        <button 
+          onclick="closeResumeAuthModal()" 
+          class="px-4 py-3 bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold rounded-lg transition-all cursor-pointer"
+        >
+          취소
+        </button>
+      </div>
+
+      <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] text-stone-500 font-mono">
+        <span>비밀번호 분실 / 열람 문의:</span>
+        <a href="mailto:yougmi974@gmail.com" class="text-[#f54e00] font-bold hover:underline">yougmi974@gmail.com</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⭐️ [2. 모바일 포트폴리오 북 & 이력서 고화질 뷰어 및 다운로드 지원 모달] ⭐️ -->
+  <div id="mobile-pdf-preview-modal" class="fixed inset-0 z-[99998] bg-stone-950/95 backdrop-blur-md hidden flex-col">
+    <!-- 모바일 상단 바 -->
+    <div class="bg-stone-900 border-b border-stone-800 px-4 py-3 flex items-center justify-between shrink-0 text-white z-20">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-[#f54e00]"></span>
+        <span id="mobile-pdf-title" class="font-bold text-sm tracking-tight truncate max-w-[200px] sm:max-w-none">포트폴리오 북 열람 &amp; 다운로드</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button 
+          onclick="triggerMobileSystemPrint()"
+          class="px-3 py-1.5 bg-[#f54e00] hover:bg-[#d04200] text-white font-bold text-xs rounded-lg shadow-sm flex items-center gap-1 cursor-pointer"
+        >
+          <span>📥 PDF 저장</span>
+        </button>
+        <button 
+          onclick="closeMobilePdfPreviewModal()"
+          class="px-2.5 py-1.5 bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white text-xs font-bold rounded-lg border border-stone-700 cursor-pointer"
+        >
+          ✕ 닫기
+        </button>
+      </div>
+    </div>
+
+    <!-- 모바일 안내 배너 -->
+    <div class="bg-amber-500/15 border-b border-amber-500/30 px-4 py-2 text-[11.5px] text-amber-200 leading-snug shrink-0">
+      💡 <strong>스마트폰 저장 안내</strong>: 상단 <strong>[📥 PDF 저장]</strong> 버튼 클릭 후 인쇄 대상을 <strong>'PDF로 저장'</strong>으로 선택하세요. (카카오톡 등 인앱 브라우저에서는 우측 상단 ⋮ 버튼 → <strong>'다른 브라우저로 열기'</strong>를 권장합니다)
+    </div>
+
+    <!-- 모바일 스크롤 컨텐츠 영역 -->
+    <div id="mobile-pdf-preview-content" class="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 max-w-4xl mx-auto w-full">
+      <!-- 동적 렌더링 -->
+    </div>
+
+    <!-- 모바일 하단 플로팅 바 -->
+    <div class="bg-stone-900/90 backdrop-blur-md border-t border-stone-800 p-3 flex items-center justify-between gap-3 shrink-0 z-20">
+      <span class="text-[11px] text-stone-400 font-mono">지원자 최영미 포트폴리오</span>
+      <div class="flex items-center gap-2">
+        <button 
+          onclick="triggerMobileSystemPrint()"
+          class="px-4 py-2 bg-[#f54e00] hover:bg-[#d04200] text-white font-bold text-xs rounded-lg shadow-sm flex items-center gap-1 cursor-pointer"
+        >
+          <span>📥 PDF로 저장하기</span>
+        </button>
+        <button 
+          onclick="closeMobilePdfPreviewModal()"
+          class="px-3 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-semibold rounded-lg border border-stone-700 cursor-pointer"
+        >
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Modal Container -->
   <div id="modal-container" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-0 md:p-6">
@@ -2963,27 +3068,128 @@
     // ========================================================
     // ⭐️ [A4 다권 구성 PDF 생성 엔진: 단독 대형 뷰 & 충실한 1장 이력서] ⭐️
     // ========================================================
+    // ⭐️ [커스텀 보안 인증 모달 엔진 (브라우저 prompt 대체)] ⭐️
+    let pendingDownloadType = null;
+
+    function requestResumeAuth(type = 'resume') {
+      if (isAdminAuthorized) {
+        executePDFDownload(type);
+        return;
+      }
+      pendingDownloadType = type;
+      const modal = document.getElementById('resume-auth-modal');
+      const input = document.getElementById('resume-auth-input');
+      const err = document.getElementById('resume-auth-error');
+      if (err) err.classList.add('hidden');
+      if (input) input.value = '';
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => { if (input) input.focus(); }, 150);
+      }
+    }
+
+    function closeResumeAuthModal() {
+      const modal = document.getElementById('resume-auth-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+      pendingDownloadType = null;
+    }
+
+    function submitResumeAuth() {
+      const input = document.getElementById('resume-auth-input');
+      const err = document.getElementById('resume-auth-error');
+      const val = (input ? input.value : '').trim();
+      
+      if (val === ADMIN_SECRET_PIN || val === '6478') {
+        localStorage.setItem('kd_admin_auth', 'true');
+        isAdminAuthorized = true;
+        isEditorMode = true;
+        localStorage.setItem('kd_portfolio_mode', 'edit');
+        document.body.classList.add('is-admin-authorized');
+        applyPortfolioModeUI();
+        const targetType = pendingDownloadType;
+        closeResumeAuthModal();
+        if (targetType === 'admin') {
+          showModeToast(true, "🔑 <strong>관리자 인증 성공!</strong> 이제 편집 도구가 활성화됩니다.");
+        } else if (targetType) {
+          executePDFDownload(targetType);
+        }
+      } else {
+        if (err) {
+          err.innerText = '❌ 비밀번호가 올바르지 않습니다. (문의: yougmi974@gmail.com)';
+          err.classList.remove('hidden');
+        }
+        if (input) {
+          input.focus();
+          input.select();
+        }
+      }
+    }
+
+    // ⭐️ [모바일 PDF 뷰어 & 인쇄 제어 엔진] ⭐️
+    function isMobileDevice() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+    }
+
+    function openMobilePdfPreviewModal(type) {
+      const modal = document.getElementById('mobile-pdf-preview-modal');
+      const titleEl = document.getElementById('mobile-pdf-title');
+      const contentEl = document.getElementById('mobile-pdf-preview-content');
+      const printArea = document.getElementById('print-area');
+
+      if (titleEl) {
+        titleEl.innerText = (type === 'portfolio') ? '📖 포트폴리오 북 (모바일 고화질 뷰어)' : '📄 입사지원서 (모바일 뷰어)';
+      }
+
+      if (contentEl && printArea) {
+        contentEl.innerHTML = printArea.innerHTML;
+        const pages = contentEl.querySelectorAll('.print-card-page, .resume-card-page');
+        pages.forEach(pg => {
+          pg.style.cssText = 'width: 100% !important; height: auto !important; max-height: none !important; margin-bottom: 20px !important; background: white !important; border-radius: 12px !important; padding: 18px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important; color: #1c1917 !important; border: 1px solid #e5e5e5 !important;';
+        });
+      }
+
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobilePdfPreviewModal() {
+      const modal = document.getElementById('mobile-pdf-preview-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function triggerMobileSystemPrint() {
+      try {
+        window.print();
+      } catch(e) {
+        alert("현재 모바일 브라우저에서는 인쇄 창 연결이 지원되지 않을 수 있습니다.\n우측 상단 ⋮ 버튼 → [다른 브라우저(Chrome/Safari)로 열기]를 권장합니다.");
+      }
+    }
+
     function generatePDF(type) {
+      if (type === 'resume') {
+        if (!isAdminAuthorized) {
+          requestResumeAuth('resume');
+          return;
+        }
+      }
+      executePDFDownload(type);
+    }
+
+    function executePDFDownload(type) {
       const printArea = document.getElementById('print-area');
       const dynamicStyle = document.getElementById('dynamic-print-style');
 
-      // ⭐️ [보안 잠금] 이력서 및 자기소개서는 비밀번호 입력 후 확인 및 출력 가능
-      if (type === 'resume') {
-        if (!isAdminAuthorized) {
-          const entered = prompt("🔒 [보안 확인] 이력서 및 자기소개서는 비밀번호 확인 후 열람 및 출력이 가능합니다.\n비밀번호를 입력해 주세요 (문의: yougmi974@gmail.com):");
-          if (entered === null) return;
-          if (entered.trim() === ADMIN_SECRET_PIN || entered.trim() === "6478") {
-            localStorage.setItem('kd_admin_auth', 'true');
-            isAdminAuthorized = true;
-            document.body.classList.add('is-admin-authorized');
-            applyPortfolioModeUI();
-          } else {
-            alert("❌ 비밀번호가 올바르지 않습니다.\n이메일(yougmi974@gmail.com)로 문의 바랍니다.");
-            return;
-          }
-        }
-      }
-      
       if (type === 'portfolio') {
         dynamicStyle.innerHTML = `
           @media print {
@@ -3557,9 +3763,13 @@
         `;
       }
 
-      setTimeout(() => {
-        window.print();
-      }, 250);
+      if (isMobileDevice()) {
+        openMobilePdfPreviewModal(type);
+      } else {
+        setTimeout(() => {
+          window.print();
+        }, 250);
+      }
     }
 
     // ========================================================
@@ -8565,26 +8775,13 @@ ${sourceText || '(초안 없음. 해당 항목에 어울리는 최상의 실무 
       applyPortfolioModeUI();
     }
 
-    // 관리자 비밀번호 입력 팝업
+        // 관리자 비밀번호 입력 팝업 (브라우저 prompt 제거 -> 커스텀 모달 연동)
     function promptAdminLogin() {
       if (isAdminAuthorized) {
         togglePortfolioMode();
         return;
       }
-      const entered = prompt("🔑 [KD 포트폴리오 관리자 인증]\n본인(작성자) 전용 비밀번호를 입력하세요:");
-      if (entered === null) return;
-
-      if (entered.trim() === ADMIN_SECRET_PIN || entered.trim() === "6478") {
-        localStorage.setItem('kd_admin_auth', 'true');
-        localStorage.setItem('kd_portfolio_mode', 'edit');
-        isAdminAuthorized = true;
-        isEditorMode = true;
-        document.body.classList.add('is-admin-authorized');
-        applyPortfolioModeUI();
-        showModeToast(true, "🔑 <strong>관리자 인증 성공!</strong> 이제 편집 도구가 나타납니다.");
-      } else {
-        alert("❌ 비밀번호가 올바르지 않습니다.");
-      }
+      requestResumeAuth('admin');
     }
 
     // 관리자 로그아웃 (다시 완벽히 잠그기)
